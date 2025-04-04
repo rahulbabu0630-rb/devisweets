@@ -1,0 +1,54 @@
+### Maven ###
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### IDE ###
+# STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VS Code
+.vscode/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### Build ###
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### Environment ###
+.env
+.env.local
+*.log
+
+### Explicitly include these ###
+# Force include pom.xml and certs
+!pom.xml
+!src/main/resources/certs/
+
+### Optional extra exclusions ###
+# Docker
+docker-compose.yml
+docker-compose.*.yml
+
+# Mac
+.DS_Store".env" 

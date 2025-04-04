@@ -1,0 +1,41 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "Dockerfile",
+    "buildCommand": "./mvnw clean package -DskipTests",
+    "watchPatterns": ["src/**", "pom.xml", "certs/**"]
+  },
+  "deploy": {
+    "startCommand": "java -jar app.jar --spring.profiles.active=prod",
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 5,
+    "healthcheckPath": "/actuator/health"
+  },
+  "variables": {
+    "PORT": {
+      "description": "Application port",
+      "value": "8080"
+    },
+    "SPRING_DATASOURCE_URL": {
+      "description": "Aiven MySQL URL with SSL",
+      "value": "jdbc:mysql://${MYSQLHOST}:${MYSQLPORT}/${MYSQLDATABASE}?sslMode=REQUIRED&serverTimezone=UTC"
+    },
+    "SPRING_DATASOURCE_USERNAME": {
+      "value": "${MYSQLUSER}"
+    },
+    "SPRING_DATASOURCE_PASSWORD": {
+      "value": "${MYSQLPASSWORD}"
+    },
+    "SSL_CERT_PATH": {
+      "value": "file:/app/certs/ca.pem"
+    },
+    "FRONTEND_URL": {
+      "description": "Frontend URL for CORS",
+      "value": "${FRONTEND_URL:http://localhost:5173}"
+    },
+    "SPRING_PROFILES_ACTIVE": {
+      "value": "prod"
+    }
+  }
+}
