@@ -1,21 +1,27 @@
-# Use official OpenJDK 17 image
 FROM eclipse-temurin:17-jdk-jammy
 
-# Set working directory
 WORKDIR /app
 
-# Copy SSL certificate (if needed)
+# Create certs directory and copy certificate
+RUN mkdir -p /app/certs
 COPY src/main/resources/certs/ca.pem /app/certs/ca.pem
 
-# Copy the built JAR file
-COPY target/attendance-*.jar app.jar
+# Copy application JAR
+COPY target/attendance-0.0.1-SNAPSHOT.jar app.jar
 
-# Expose the port
-EXPOSE ${PORT:-8080}
+# Set non-sensitive defaults
+ENV DB_PORT=10699
+ENV FRONTEND_URL=http://localhost:5173
+ENV SSL_CERT_PATH=/app/certs/ca.pem
 
-# Set timezone
-ENV TZ=UTC
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# Sensitive variables should be passed at runtime
+# (These are documented here but not set)
+# ENV SPRING_DATASOURCE_URL=
+# ENV SPRING_DATASOURCE_USERNAME=
+# ENV SPRING_DATASOURCE_PASSWORD=
 
-# Run with production profile and SSL support
+EXPOSE 10699
+# Add this line before ENTRYPOINT
+# Add this line before ENTRYPOINT
+COPY .env .
 ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=prod"]

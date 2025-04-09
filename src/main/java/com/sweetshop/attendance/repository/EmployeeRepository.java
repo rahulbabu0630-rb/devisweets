@@ -14,4 +14,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query("SELECT e FROM Employee e WHERE LOWER(TRIM(e.name)) LIKE LOWER(CONCAT('%', TRIM(:name), '%'))")
     List<Employee> findByName(@Param("name") String name);
 
+	boolean existsByNumber(String number);
+
+
+
 }

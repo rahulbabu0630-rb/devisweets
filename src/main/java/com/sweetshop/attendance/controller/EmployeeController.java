@@ -1,6 +1,7 @@
 package com.sweetshop.attendance.controller;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,43 +20,43 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sweetshop.attendance.model.Employee;
 import com.sweetshop.attendance.service.EmployeeService;
 
-
-
-@CrossOrigin(origins = "http://localhost:5173") // Adjust this based on frontend port
 @RestController
-@RequestMapping("/employees")
+@CrossOrigin(origins = {"https://durgadevisweets.vercel.app", "http://localhost:5173"}, 
+originPatterns = {"https://durgadevisweets-*-rahuls-projects-*.vercel.app"})
+@RequestMapping("/api/employees")
 public class EmployeeController {
-	
-	@Autowired
-	private EmployeeService employeeService;
-	
-	
-	@PostMapping("/add")
-	public Employee createEmployee(@RequestBody Employee employee) {
-		return employeeService.addEmployee(employee);
-	}
-	@GetMapping("/all")
+    
+    @Autowired
+    private EmployeeService employeeService;
+    
+    @PostMapping("/add")
+    public Employee createEmployee(@RequestBody Employee employee) {
+        return employeeService.addEmployee(employee);
+    }
+
+    @GetMapping("/all")
     public List<Employee> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
-	@GetMapping("/get")
-	public List<Employee> getEmployeeByName(@RequestParam String name) {
-		return 
-	employeeService.getEmployeeByName(name);
-	}
-	  // New API to get Employee by ID
+
+    @GetMapping("/get")
+    public List<Employee> getEmployeeByName(@RequestParam String name) {
+        return employeeService.getEmployeeByName(name);
+    }
+
     @GetMapping("/getById/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
         Optional<Employee> employee = employeeService.getEmployeeById(id);
         return employee.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-	 	@DeleteMapping("/delete/{id}")
-	public String deleteEmployeeByName(@PathVariable Long id) {
-		return employeeService.deleteEmployeeById(id);
-	}
-	@PutMapping("/update/{id}")
-	public String updateEmployeeById(@PathVariable Long id, @RequestBody Employee updatedEmployee) {
-		return employeeService.updateEmployeeById(id, updatedEmployee);
-	}
-	
+
+    @DeleteMapping("/delete/{id}")
+    public String deleteEmployeeByName(@PathVariable Long id) {
+        return employeeService.deleteEmployeeById(id);
+    }
+
+    @PutMapping("/update/{id}")
+    public String updateEmployeeById(@PathVariable Long id, @RequestBody Employee updatedEmployee) {
+        return employeeService.updateEmployeeById(id, updatedEmployee);
+    }
 }
