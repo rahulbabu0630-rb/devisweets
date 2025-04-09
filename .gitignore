@@ -52,3 +52,4 @@ docker-compose.*.yml
 
 # Mac
 .DS_Store".env" 
+".env.production" 
