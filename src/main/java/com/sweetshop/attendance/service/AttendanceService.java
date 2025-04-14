@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AttendanceService {
@@ -188,6 +191,52 @@ public class AttendanceService {
         attendanceRepository.save(attendance);
 
         return "Past attendance marked successfully for " + date;
+    }
+ // ✅ Get Today's Attendance Status with Employee Details
+    public Map<String, Object> getTodayAttendanceStatus(Long employeeId) {
+        Optional<Employee> employeeOpt = employeeRepository.findById(employeeId);
+        if (employeeOpt.isEmpty()) {
+            throw new RuntimeException("Employee not found!");
+        }
+
+        Employee employee = employeeOpt.get();
+        LocalDate today = LocalDate.now();
+        
+        // Find today's attendance if marked
+        Optional<Attendance> todayAttendanceOpt = attendanceRepository
+                .findTopByEmployee_IdAndDateOrderByIdDesc(employeeId, today);
+
+        String status = "Not Marked";
+        if (todayAttendanceOpt.isPresent()) {
+            status = todayAttendanceOpt.get().getStatus();
+        }
+
+        // Prepare response map
+        return Map.of(
+            "employeeName", employee.getName(),
+            "currentDate", today.toString(),
+            "attendanceStatus", status
+        );
+    }
+    public List<Map<String, Object>> getAllEmployeesTodayStatus() {
+        return employeeRepository.findAll().stream()
+            .map(employee -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("employeeId", employee.getId());
+                map.put("employeeName", employee.getName());
+                map.put("currentDate", LocalDate.now().toString());
+                map.put("attendanceStatus", 
+                    attendanceRepository
+                        .findTopByEmployee_IdAndDateOrderByIdDesc(
+                            employee.getId(), 
+                            LocalDate.now()
+                        )
+                        .map(Attendance::getStatus)
+                        .orElse("Not Marked")
+                );
+                return map;
+            })
+            .collect(Collectors.toList());
     }
     
 }

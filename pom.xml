@@ -76,7 +76,28 @@
     <artifactId>hibernate-validator</artifactId>
     <version>8.0.1.Final</version>
 </dependency>
-		
+	<dependency>
+   		 <groupId>org.apache.pdfbox</groupId>
+   		 <artifactId>pdfbox</artifactId>
+    <version>2.0.27</version>
+	</dependency>
+		<!-- Spring Cache Abstraction -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-cache</artifactId>
+</dependency>
+
+<!-- Redis Cache Implementation -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+
+<!-- For better performance monitoring -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
 	</dependencies>
 
 	<build>
