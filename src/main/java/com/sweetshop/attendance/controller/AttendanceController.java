@@ -21,9 +21,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/attendance")
 @CrossOrigin(
-	    origins = {"http://localhost:8080", "http://durgadevisweets.vercel.app,https://devisweets1.vercel.app/"},
-	    allowCredentials = "true"
-	) 
+	     origins = {"http://localhost:8080", "http://durgadevisweets.vercel.app", "https://devisweets1.vercel.app", "https://durgadevisweets.onrender.com"},
+	     allowCredentials = "true"
+	)
+
 public class AttendanceController {
 
     @Autowired
@@ -77,6 +78,7 @@ public class AttendanceController {
         Map<String, Object> response = attendanceService.getTodayAttendanceStatus(employeeId);
         return ResponseEntity.ok(response);
     } @GetMapping("/all-today-status")
+    @CrossOrigin(origins = "https://durgadevisweets.onrender.com")
     public ResponseEntity<List<Map<String, Object>>> getAllEmployeesTodayStatus() {
         List<Map<String, Object>> response = attendanceService.getAllEmployeesTodayStatus();
         return ResponseEntity.ok(response);
