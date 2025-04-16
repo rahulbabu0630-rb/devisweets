@@ -16,6 +16,7 @@ public class CorsConfig {
         // Allow both Vercel frontend domains
         config.addAllowedOrigin("https://devisweets1.vercel.app");
         config.addAllowedOrigin("https://durgadevisweets.vercel.app");
+        config.addAllowedOrigin("https://localhost:5173");
         
         // Allow common HTTP methods
         config.addAllowedMethod("GET");
