@@ -77,8 +77,9 @@ public class AttendanceController {
     public ResponseEntity<Map<String, Object>> getTodayAttendanceStatus(@RequestParam Long employeeId) {
         Map<String, Object> response = attendanceService.getTodayAttendanceStatus(employeeId);
         return ResponseEntity.ok(response);
-    } @GetMapping("/all-today-status")
-    @CrossOrigin(origins = "https://durgadevisweets.onrender.com")
+    } 
+    @GetMapping("/all-today-status")
+    @CrossOrigin(origins = "https://durgadevisweets.onrender.com,https://devisweets1.vercel.app/,https://durgadevisweets.vercel.app/")
     public ResponseEntity<List<Map<String, Object>>> getAllEmployeesTodayStatus() {
         List<Map<String, Object>> response = attendanceService.getAllEmployeesTodayStatus();
         return ResponseEntity.ok(response);
