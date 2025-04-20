@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/attendance")
 @CrossOrigin(
-	     origins = {"http://localhost:8080", "http://durgadevisweets.vercel.app", "https://devisweets1.vercel.app", "https://durgadevisweets.onrender.com"},
+	     origins = {"http://localhost:8080", "http://durgadevisweets.vercel.app", "https://devisweets1.vercel.app", "https://durgadevisweets.onrender.com","https://newrepo-rose.vercel.app/"},
 	     allowCredentials = "true"
 	)
 
@@ -79,10 +79,12 @@ public class AttendanceController {
         return ResponseEntity.ok(response);
     } 
     @GetMapping("/all-today-status")
-    @CrossOrigin(origins = "https://durgadevisweets.onrender.com,https://devisweets1.vercel.app/,https://durgadevisweets.vercel.app/")
-    public ResponseEntity<List<Map<String, Object>>> getAllEmployeesTodayStatus() {
-        List<Map<String, Object>> response = attendanceService.getAllEmployeesTodayStatus();
-        return ResponseEntity.ok(response);
-    }
+    @CrossOrigin(origins = {"https://durgadevisweets.onrender.com", 
+                           "https://devisweets1.vercel.app", 
+                           "https://durgadevisweets.vercel.app",
+                           "https://localhost:8080","https://newrepo-rose.vercel.app/"})
+    public List<Map<String, Object>> getAllEmployeesTodayStatus() {
+        return attendanceService.getAllEmployeesTodayStatus();
+    } 
     
 }

@@ -21,7 +21,8 @@ public class CorsConfig {
             "https://devisweets1.vercel.app",
             "https://durgadevisweets.vercel.app",
             "http://localhost:5173",  // Note: changed from https to http for local dev
-            "https://durgadevisweets.onrender.com"  // Add your backend domain if needed
+            "https://durgadevisweets.onrender.com",  // Add your backend domain if needed
+            "https://newrepo-rose.vercel.app/"
         ));
         
         // Allow all standard HTTP methods
