@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +37,7 @@ public class AttendanceService {
         LocalDate today = LocalDate.now();
 
         int daysInMonth = YearMonth.of(today.getYear(), today.getMonthValue()).lengthOfMonth();
-        	double dailySalary = employee.getSalary() / daysInMonth ;
+        double dailySalary = employee.getSalary() / daysInMonth;
         
         // ✅ Validate status before processing
         if (!status.equalsIgnoreCase("present") &&
@@ -118,8 +119,8 @@ public class AttendanceService {
         LocalDate endDate = yearMonth.atEndOfMonth();
         
         return attendanceRepository.findLastAttendanceByMonth(employeeId, startDate, endDate);
-
     }
+
     public String updatePastAttendance(Long employeeId, LocalDate date) {
         Optional<Attendance> attendanceOpt = attendanceRepository.findTopByEmployee_IdAndDateOrderByIdDesc(employeeId, date);
 
@@ -150,6 +151,7 @@ public class AttendanceService {
         }
         return "No attendance record found for the given date.";
     }
+
     // ✅ Mark Attendance for Past Dates
     public String markPastAttendance(Long employeeId, String status, LocalDate date) {
         Optional<Employee> employeeOpt = employeeRepository.findById(employeeId);
@@ -159,7 +161,7 @@ public class AttendanceService {
 
         Employee employee = employeeOpt.get();
         int daysInMonth = YearMonth.of(date.getYear(), date.getMonthValue()).lengthOfMonth();
-        double dailySalary = employee.getSalary() / daysInMonth ; // Assuming a 30-day month
+        double dailySalary = employee.getSalary() / daysInMonth; // Assuming a 30-day month
 
         // ✅ Validate status before processing
         if (!status.equalsIgnoreCase("present") &&
@@ -193,64 +195,34 @@ public class AttendanceService {
 
         return "Past attendance marked successfully for " + date;
     }
- // ✅ Get Today's Attendance Status with Employee Details
-    public Map<String, Object> getTodayAttendanceStatus(Long employeeId) {
-        Optional<Employee> employeeOpt = employeeRepository.findById(employeeId);
-        if (employeeOpt.isEmpty()) {
-            throw new RuntimeException("Employee not found!");
-        }
 
-        Employee employee = employeeOpt.get();
-        LocalDate today = LocalDate.now();
-        
-        // Find today's attendance if marked
-        Optional<Attendance> todayAttendanceOpt = attendanceRepository
-                .findTopByEmployee_IdAndDateOrderByIdDesc(employeeId, today);
-
-        String status = "Not Marked";
-        if (todayAttendanceOpt.isPresent()) {
-            status = todayAttendanceOpt.get().getStatus();
-        }
-
-        // Prepare response map
-        return Map.of(
-            "employeeName", employee.getName(),
-            "currentDate", today.toString(),
-            "attendanceStatus", status
-        );
-    }
     public List<Map<String, Object>> getAllEmployeesTodayStatus() {
         LocalDate today = LocalDate.now();
-        
-        // Get all employees (since isActive field isn't shown in your model)
         List<Employee> allEmployees = employeeRepository.findAll();
-        
-        // Get today's attendance records
         List<Attendance> todaysAttendances = attendanceRepository.findByDate(today);
-        
-        // Create a map for quick lookup of employee attendance
+
         Map<Long, Attendance> employeeAttendanceMap = todaysAttendances.stream()
             .collect(Collectors.toMap(
                 att -> att.getEmployee().getId(),
                 att -> att,
-                (existing, replacement) -> existing // Keep first entry if duplicates
+                (existing, replacement) -> existing
             ));
-        
-        // Build the response
+
         List<Map<String, Object>> result = new ArrayList<>();
         
         for (Employee employee : allEmployees) {
             Map<String, Object> employeeStatus = new LinkedHashMap<>();
+            Attendance attendance = employeeAttendanceMap.get(employee.getId());
+            
             employeeStatus.put("employeeId", employee.getId());
             employeeStatus.put("employeeName", employee.getName());
-            employeeStatus.put("role", employee.getRole());
-            employeeStatus.put("salary", employee.getSalary());
-            
-            // Get attendance status (default to "absent" if no record)
-            Attendance attendance = employeeAttendanceMap.get(employee.getId());
-            String status = (attendance != null) ? attendance.getStatus().toLowerCase() : "absent";
-            employeeStatus.put("status", status);
-            employeeStatus.put("date", today.toString());
+            employeeStatus.put("attendanceStatus", 
+                (attendance != null) ? attendance.getStatus().toLowerCase() : "absent");
+            employeeStatus.put("currentDate", today.toString());
+            employeeStatus.put("department", employee.getRole());
+            employeeStatus.put("position", employee.getRole());
+            // Removed the lastCheckIn field since it's not available in Attendance model
+            // If you need it, you should add a timestamp field to your Attendance model
             
             result.add(employeeStatus);
         }

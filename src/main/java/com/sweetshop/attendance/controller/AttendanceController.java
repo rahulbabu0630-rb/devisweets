@@ -72,16 +72,10 @@ public class AttendanceController {
         return attendanceService.updatePastAttendance(employeeId, localDate);
     }
 
-    // API to Get Employee Name, Current Date and Today's Attendance Status
-    @GetMapping("/today-status")
-    public ResponseEntity<Map<String, Object>> getTodayAttendanceStatus(@RequestParam Long employeeId) {
-        Map<String, Object> response = attendanceService.getTodayAttendanceStatus(employeeId);
-        return ResponseEntity.ok(response);
-    } 
-    
-    // API to Get All Employees' Today Status
+
     @GetMapping("/all-today-status")
-    public List<Map<String, Object>> getAllEmployeesTodayStatus() {
-        return attendanceService.getAllEmployeesTodayStatus();
+    public ResponseEntity<List<Map<String, Object>>> getAllEmployeesTodayStatus() {
+        List<Map<String, Object>> response = attendanceService.getAllEmployeesTodayStatus();
+        return ResponseEntity.ok(response);
     }
 }
