@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -218,24 +220,41 @@ public class AttendanceService {
         );
     }
     public List<Map<String, Object>> getAllEmployeesTodayStatus() {
-        return employeeRepository.findAll().stream()
-            .map(employee -> {
-                Map<String, Object> map = new HashMap<>();
-                map.put("employeeId", employee.getId());
-                map.put("employeeName", employee.getName());
-                map.put("currentDate", LocalDate.now().toString());
-                map.put("attendanceStatus", 
-                    attendanceRepository
-                        .findTopByEmployee_IdAndDateOrderByIdDesc(
-                            employee.getId(), 
-                            LocalDate.now()
-                        )
-                        .map(Attendance::getStatus)
-                        .orElse("Not Marked")
-                );
-                return map;
-            })
-            .collect(Collectors.toList());
+        LocalDate today = LocalDate.now();
+        
+        // Get all employees (since isActive field isn't shown in your model)
+        List<Employee> allEmployees = employeeRepository.findAll();
+        
+        // Get today's attendance records
+        List<Attendance> todaysAttendances = attendanceRepository.findByDate(today);
+        
+        // Create a map for quick lookup of employee attendance
+        Map<Long, Attendance> employeeAttendanceMap = todaysAttendances.stream()
+            .collect(Collectors.toMap(
+                att -> att.getEmployee().getId(),
+                att -> att,
+                (existing, replacement) -> existing // Keep first entry if duplicates
+            ));
+        
+        // Build the response
+        List<Map<String, Object>> result = new ArrayList<>();
+        
+        for (Employee employee : allEmployees) {
+            Map<String, Object> employeeStatus = new LinkedHashMap<>();
+            employeeStatus.put("employeeId", employee.getId());
+            employeeStatus.put("employeeName", employee.getName());
+            employeeStatus.put("role", employee.getRole());
+            employeeStatus.put("salary", employee.getSalary());
+            
+            // Get attendance status (default to "absent" if no record)
+            Attendance attendance = employeeAttendanceMap.get(employee.getId());
+            String status = (attendance != null) ? attendance.getStatus().toLowerCase() : "absent";
+            employeeStatus.put("status", status);
+            employeeStatus.put("date", today.toString());
+            
+            result.add(employeeStatus);
+        }
+        
+        return result;
     }
-    
 }

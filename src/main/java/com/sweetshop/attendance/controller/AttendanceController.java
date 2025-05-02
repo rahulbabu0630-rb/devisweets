@@ -4,27 +4,27 @@ import com.sweetshop.attendance.model.Attendance;
 import com.sweetshop.attendance.repository.AttendanceRepository;
 import com.sweetshop.attendance.service.AttendanceService;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/attendance")
 @CrossOrigin(
-	     origins = {"http://localhost:8080", "http://durgadevisweets.vercel.app", "https://devisweets1.vercel.app", "https://durgadevisweets.onrender.com","https://newrepo-rose.vercel.app/"},
-	     allowCredentials = "true"
-	)
-
+    origins = {
+        "http://localhost:8080", 
+        "http://durgadevisweets.vercel.app", 
+        "https://devisweets1.vercel.app", 
+        "https://durgadevisweets.onrender.com",
+        "https://newrepo-rose.vercel.app",
+        "http://localhost:5173"
+    },
+    allowCredentials = "true"
+)
 public class AttendanceController {
 
     @Autowired
@@ -78,13 +78,10 @@ public class AttendanceController {
         Map<String, Object> response = attendanceService.getTodayAttendanceStatus(employeeId);
         return ResponseEntity.ok(response);
     } 
+    
+    // API to Get All Employees' Today Status
     @GetMapping("/all-today-status")
-    @CrossOrigin(origins = {"https://durgadevisweets.onrender.com", 
-                           "https://devisweets1.vercel.app", 
-                           "https://durgadevisweets.vercel.app",
-                           "https://localhost:8080","https://newrepo-rose.vercel.app/"})
     public List<Map<String, Object>> getAllEmployeesTodayStatus() {
         return attendanceService.getAllEmployeesTodayStatus();
-    } 
-    
+    }
 }

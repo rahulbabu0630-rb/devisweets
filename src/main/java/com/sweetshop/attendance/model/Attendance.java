@@ -32,9 +32,6 @@ public class Attendance {
 	@Column(nullable = false)
 	private Double salary;
 	
-	
-	
-
 	public Attendance() {
 	}
 

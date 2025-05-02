@@ -1,8 +1,8 @@
 package com.sweetshop.attendance.service;
 
 import java.util.List;
-
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.sweetshop.attendance.model.Employee;
@@ -17,6 +17,7 @@ public class EmployeeService {
     public EmployeeService(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
+
     public Employee addEmployee(Employee employee) {
         // Check if employee with same name already exists
         List<Employee> existingEmployees = employeeRepository.findByName(employee.getName());
@@ -59,16 +60,25 @@ public class EmployeeService {
         return "Employee Not Found";
     }
 
-    public String updateEmployeeById(Long id, Employee updatedEmployee) {
+    public Employee updateEmployeeById(Long id, Employee updatedEmployee) {
         Employee existingEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee with id " + id + " not found"));
 
-        existingEmployee.setName(updatedEmployee.getName());
-        existingEmployee.setRole(updatedEmployee.getRole());
-        existingEmployee.setNumber(updatedEmployee.getNumber());
-        existingEmployee.setSalary(updatedEmployee.getSalary());
+        // Update only the fields that should be updated
+        if (updatedEmployee.getName() != null) {
+            existingEmployee.setName(updatedEmployee.getName());
+        }
+        if (updatedEmployee.getRole() != null) {
+            existingEmployee.setRole(updatedEmployee.getRole());
+        }
+        if (updatedEmployee.getNumber() != null) {
+            // Optional: Add phone number validation here
+            existingEmployee.setNumber(updatedEmployee.getNumber());
+        }
+        if (updatedEmployee.getSalary() != null) {
+            existingEmployee.setSalary(updatedEmployee.getSalary());
+        }
 
-        employeeRepository.save(existingEmployee);
-        return "Employee updated successfully.";
+        return employeeRepository.save(existingEmployee);
     }
 }
