@@ -1,6 +1,7 @@
 package com.sweetshop.attendance.controller;
 
 import com.sweetshop.attendance.model.Attendance;
+
 import com.sweetshop.attendance.repository.AttendanceRepository;
 import com.sweetshop.attendance.service.AttendanceService;
 
@@ -73,9 +74,15 @@ public class AttendanceController {
     }
 
 
+
+    @PostMapping("/save-all")
+    public String saveAttendanceList(@RequestBody List<Map<String, Object>> attendanceData) {
+        attendanceService.saveAttendanceList(attendanceData);
+        return "Attendance data saved successfully.";
+    }
+
     @GetMapping("/all-today-status")
-    public ResponseEntity<List<Map<String, Object>>> getAllEmployeesTodayStatus() {
-        List<Map<String, Object>> response = attendanceService.getAllEmployeesTodayStatus();
-        return ResponseEntity.ok(response);
+    public List<Attendance> getAllAttendances() {
+        return attendanceService.getAllAttendances();
     }
 }

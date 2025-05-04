@@ -35,7 +35,7 @@ public class Attendance {
 	public Attendance() {
 	}
 
-	public Attendance(Long employeeId, String status2, LocalDate date2) {
+	public Attendance(Long employeeId, String status, LocalDate date) {
 	}
 
 	public Attendance(Employee employee, LocalDate date, String status, Double salary) {

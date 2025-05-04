@@ -196,37 +196,22 @@ public class AttendanceService {
         return "Past attendance marked successfully for " + date;
     }
 
-    public List<Map<String, Object>> getAllEmployeesTodayStatus() {
-        LocalDate today = LocalDate.now();
-        List<Employee> allEmployees = employeeRepository.findAll();
-        List<Attendance> todaysAttendances = attendanceRepository.findByDate(today);
+    public void saveAttendanceList(List<Map<String, Object>> attendanceData) {
+        for (Map<String, Object> record : attendanceData) {
+            Long empId = Long.valueOf(record.get("employeeId").toString());
+            String status = record.get("attendanceStatus").toString();
+            LocalDate date = LocalDate.parse(record.get("currentDate").toString());
+            Double salary = 0.0;  // You can adjust how salary is set here
 
-        Map<Long, Attendance> employeeAttendanceMap = todaysAttendances.stream()
-            .collect(Collectors.toMap(
-                att -> att.getEmployee().getId(),
-                att -> att,
-                (existing, replacement) -> existing
-            ));
+            Employee employee = employeeRepository.findById(empId)
+                    .orElseThrow(() -> new RuntimeException("Employee not found with id " + empId));
 
-        List<Map<String, Object>> result = new ArrayList<>();
-        
-        for (Employee employee : allEmployees) {
-            Map<String, Object> employeeStatus = new LinkedHashMap<>();
-            Attendance attendance = employeeAttendanceMap.get(employee.getId());
-            
-            employeeStatus.put("employeeId", employee.getId());
-            employeeStatus.put("employeeName", employee.getName());
-            employeeStatus.put("attendanceStatus", 
-                (attendance != null) ? attendance.getStatus().toLowerCase() : "absent");
-            employeeStatus.put("currentDate", today.toString());
-            employeeStatus.put("department", employee.getRole());
-            employeeStatus.put("position", employee.getRole());
-            // Removed the lastCheckIn field since it's not available in Attendance model
-            // If you need it, you should add a timestamp field to your Attendance model
-            
-            result.add(employeeStatus);
+            Attendance attendance = new Attendance(employee, date, status, salary);
+            attendanceRepository.save(attendance);
         }
-        
-        return result;
+    }
+
+    public List<Attendance> getAllAttendances() {
+        return attendanceRepository.findAll();
     }
 }
