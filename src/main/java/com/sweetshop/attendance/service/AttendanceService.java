@@ -196,22 +196,4 @@ public class AttendanceService {
         return "Past attendance marked successfully for " + date;
     }
 
-    public void saveAttendanceList(List<Map<String, Object>> attendanceData) {
-        for (Map<String, Object> record : attendanceData) {
-            Long empId = Long.valueOf(record.get("employeeId").toString());
-            String status = record.get("attendanceStatus").toString();
-            LocalDate date = LocalDate.parse(record.get("currentDate").toString());
-            Double salary = 0.0;  // You can adjust how salary is set here
-
-            Employee employee = employeeRepository.findById(empId)
-                    .orElseThrow(() -> new RuntimeException("Employee not found with id " + empId));
-
-            Attendance attendance = new Attendance(employee, date, status, salary);
-            attendanceRepository.save(attendance);
-        }
-    }
-
-    public List<Attendance> getAllAttendances() {
-        return attendanceRepository.findAll();
-    }
 }

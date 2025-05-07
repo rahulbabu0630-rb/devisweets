@@ -72,17 +72,4 @@ public class AttendanceController {
         LocalDate localDate = LocalDate.parse(date);
         return attendanceService.updatePastAttendance(employeeId, localDate);
     }
-
-
-
-    @PostMapping("/save-all")
-    public String saveAttendanceList(@RequestBody List<Map<String, Object>> attendanceData) {
-        attendanceService.saveAttendanceList(attendanceData);
-        return "Attendance data saved successfully.";
-    }
-
-    @GetMapping("/all-today-status")
-    public List<Attendance> getAllAttendances() {
-        return attendanceService.getAllAttendances();
-    }
 }
