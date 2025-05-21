@@ -1,12 +1,10 @@
 package com.sweetshop.attendance.bulk;
-
 import com.sweetshop.attendance.model.Attendance;
 import com.sweetshop.attendance.model.Employee;
 import com.sweetshop.attendance.repository.AttendanceRepository;
 import com.sweetshop.attendance.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.*;
@@ -20,7 +18,7 @@ public class BulkAttendanceService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    // ✅ Bulk Mark Attendance with Same Status for Multiple Employees
+    // Bulk Mark Attendance with Same Status for Multiple Employees
     public String markBulkAttendance(List<Long> employeeIds, String status) {
         LocalDate today = LocalDate.now();
         YearMonth yearMonth = YearMonth.of(today.getYear(), today.getMonthValue());
