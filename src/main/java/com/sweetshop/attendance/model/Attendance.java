@@ -1,7 +1,5 @@
 package com.sweetshop.attendance.model;
-
 import java.time.LocalDate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -84,7 +82,4 @@ public class Attendance {
 	public void setSalary(Double salary) {
 		this.salary = salary;
 	}
-	
-	
-	
 }
