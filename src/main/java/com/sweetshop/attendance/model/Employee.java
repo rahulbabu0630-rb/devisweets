@@ -1,10 +1,7 @@
 package com.sweetshop.attendance.model;
-
 import java.util.List;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,8 +13,7 @@ import jakarta.validation.constraints.Pattern;
 @Entity
 @Table(name="workers")
 public class Employee {
-	
-	
+		
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long  id;
@@ -35,15 +31,9 @@ public class Employee {
 	@Column(nullable=false)
 	private Double salary;
 	
-	
-	
 	public Employee() {
-		
 	}
 	public Employee( String name, String role, String number, Double salary) {
-	
-		
-	
 		this.name = name;
 		this.role = role;
 		this.number = number;
@@ -79,5 +69,4 @@ public class Employee {
 	public void setSalary(Double salary) {
 		this.salary = salary;
 	}
-	
 }
