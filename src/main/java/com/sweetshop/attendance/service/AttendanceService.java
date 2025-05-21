@@ -1,5 +1,4 @@
 package com.sweetshop.attendance.service;
-
 import com.sweetshop.attendance.model.Attendance;
 import com.sweetshop.attendance.model.Employee;
 import com.sweetshop.attendance.repository.AttendanceRepository;
@@ -26,7 +25,7 @@ public class AttendanceService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    // ✅ Mark Attendance (Allows updating existing entry for the same day)
+    // Mark Attendance (Allows updating existing entry for the same day)
     public String markAttendance(Long employeeId, String status) {
         Optional<Employee> employeeOpt = employeeRepository.findById(employeeId);
         if (employeeOpt.isEmpty()) {
@@ -39,14 +38,14 @@ public class AttendanceService {
         int daysInMonth = YearMonth.of(today.getYear(), today.getMonthValue()).lengthOfMonth();
         double dailySalary = employee.getSalary() / daysInMonth;
         
-        // ✅ Validate status before processing
+        //  Validate status before processing
         if (!status.equalsIgnoreCase("present") &&
             !status.equalsIgnoreCase("halfday") &&
             !status.equalsIgnoreCase("absent")) {
             return "Invalid status! Allowed values: present, halfday, absent";
         }
 
-        // ✅ Salary Calculation
+        // Salary Calculation
         double salaryForTheDay = 0.0;
         switch (status.toLowerCase()) {
             case "present" -> salaryForTheDay = dailySalary;
@@ -54,11 +53,11 @@ public class AttendanceService {
             case "absent" -> salaryForTheDay = 0.0;
         }
 
-        // ✅ Check if attendance exists for today
+        // Check if attendance exists for today
         Optional<Attendance> existingAttendanceOpt = attendanceRepository.findTopByEmployee_NameAndDateOrderByIdDesc(employee.getName(), today);
 
         if (existingAttendanceOpt.isPresent()) {
-            // ✅ Update existing attendance
+            // Update existing attendance
             Attendance existingAttendance = existingAttendanceOpt.get();
             existingAttendance.setStatus(status);
             existingAttendance.setSalary(salaryForTheDay);
@@ -66,14 +65,14 @@ public class AttendanceService {
             return "Attendance updated successfully!";
         }
 
-        // ✅ Save new attendance entry
+        // Save new attendance entry
         Attendance attendance = new Attendance(employee, today, status, salaryForTheDay);
         attendanceRepository.save(attendance);
 
         return "Attendance marked successfully!";
     }
 
-    // ✅ Get Monthly Attendance Summary
+    // Get Monthly Attendance Summary
     public String getMonthlyAttendance(Long employeeId, int year, int month) {
         Optional<Employee> employeeOpt = employeeRepository.findById(employeeId);
         if (employeeOpt.isEmpty()) {
@@ -85,14 +84,14 @@ public class AttendanceService {
         LocalDate startDate = yearMonth.atDay(1);
         LocalDate endDate = yearMonth.atEndOfMonth();
 
-        // ✅ Fetch attendance records for the given month
+        // Fetch attendance records for the given month
         List<Attendance> attendanceList = attendanceRepository.findLastAttendanceByMonth(employeeId, startDate, endDate);
 
-        // ✅ Initialize counters
+        // Initialize counters
         int totalPresent = 0, totalAbsent = 0, totalHalfDay = 0;
         double totalSalary = 0;
 
-        // ✅ Calculate attendance summary
+        // Calculate attendance summary
         for (Attendance attendance : attendanceList) {
             switch (attendance.getStatus().toLowerCase()) {
                 case "present" -> totalPresent++;
@@ -108,7 +107,7 @@ public class AttendanceService {
         );
     }
 
-    // ✅ Get Last Attendance Entry Per Day (Removes Duplicates)
+    // Get Last Attendance Entry Per Day (Removes Duplicates)
     public List<Attendance> getLastAttendanceByMonth(Long employeeId, int year, int month) {
         Optional<Employee> employeeOpt = employeeRepository.findById(employeeId);
         if (employeeOpt.isEmpty()) {
@@ -130,7 +129,7 @@ public class AttendanceService {
 
             double correctSalary;
 
-            // ✅ Calculate salary based on attendance status
+            // Calculate salary based on attendance status
             switch (attendance.getStatus().toLowerCase()) {
                 case "present":
                     correctSalary = attendance.getEmployee().getSalary() / daysInMonth;
@@ -145,14 +144,14 @@ public class AttendanceService {
                     return "Invalid status found!";
             }
 
-            attendance.setSalary(correctSalary); // ✅ Update salary
+            attendance.setSalary(correctSalary); // Update salary
             attendanceRepository.save(attendance);
             return "Attendance updated successfully for " + attendance.getEmployee().getName() + " on " + date;
         }
         return "No attendance record found for the given date.";
     }
 
-    // ✅ Mark Attendance for Past Dates
+    // Mark Attendance for Past Dates
     public String markPastAttendance(Long employeeId, String status, LocalDate date) {
         Optional<Employee> employeeOpt = employeeRepository.findById(employeeId);
         if (employeeOpt.isEmpty()) {
@@ -163,25 +162,25 @@ public class AttendanceService {
         int daysInMonth = YearMonth.of(date.getYear(), date.getMonthValue()).lengthOfMonth();
         double dailySalary = employee.getSalary() / daysInMonth; // Assuming a 30-day month
 
-        // ✅ Validate status before processing
+        // Validate status before processing
         if (!status.equalsIgnoreCase("present") &&
             !status.equalsIgnoreCase("halfday") &&
             !status.equalsIgnoreCase("absent")) {
             return "Invalid status! Allowed values: present, halfday, absent";
         }
 
-        // ✅ Salary Calculation
+        // Salary Calculation
         double salaryForTheDay = switch (status.toLowerCase()) {
             case "present" -> dailySalary;
             case "halfday" -> dailySalary / 2;
             default -> 0.0;
         };
 
-        // ✅ Check if attendance exists for the given past date
+        // Check if attendance exists for the given past date
         Optional<Attendance> existingAttendanceOpt = attendanceRepository.findTopByEmployee_IdAndDateOrderByIdDesc(employeeId, date);
 
         if (existingAttendanceOpt.isPresent()) {
-            // ✅ Update existing attendance
+            //  Update existing attendance
             Attendance existingAttendance = existingAttendanceOpt.get();
             existingAttendance.setStatus(status);
             existingAttendance.setSalary(salaryForTheDay);
@@ -189,11 +188,10 @@ public class AttendanceService {
             return "Past attendance updated successfully for " + date;
         }
 
-        // ✅ Save new attendance entry
+        // Save new attendance entry
         Attendance attendance = new Attendance(employee, date, status, salaryForTheDay);
         attendanceRepository.save(attendance);
 
         return "Past attendance marked successfully for " + date;
     }
-
 }
