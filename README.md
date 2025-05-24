@@ -1,5 +1,5 @@
 # Single Click Attendance
-A Spring Boot-based REST API for managing employee attendance with CRUD operations for employee data and comprehensive attendance tracking features.
+A Spring Boot-based REST APIs for managing employee attendance with CRUD operations for employee data and comprehensive attendance tracking features.
 
 # Key Features and Functionalities
 - Employee CRUD operations (Create, Read, Update, Delete)
@@ -7,7 +7,7 @@ A Spring Boot-based REST API for managing employee attendance with CRUD operatio
 - Bulk attendance marking for multiple employees
 - Past date attendance correction
 - Monthly attendance summary and filtering
-- Salary calculation based on attendance
+- Salary calculation based on attendance marking
 
 # Technologies Used
 - Java 17
